@@ -1,0 +1,15 @@
+*.project
+*.settings
+*.classpath
+*.class
+target
+*.log
+*/log/*
+*/template/*
+*/tool/*
+logs
+*.bak
+.idea
+*.idea*
+*.iml
+*/javadoc/*
