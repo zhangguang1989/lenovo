@@ -1,22 +1,19 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
+import datetime
+import threading
 
-options = webdriver.EdgeOptions()
-options.add_argument('-ignore-certificate-errors')
-options.add_argument('-ignore -ssl-errors')
-driver = webdriver.Edge(options=options)
-driver.implicitly_wait(5)
 phone = '13880944717'
 password = 'ysqkdlxylcmqL2'
 
 
-def checkAndOrder(url):
+def checkAndOrder(driver, url):
     try:
         driver.get(url)
         userNameElem = driver.find_element(By.CLASS_NAME, 'userNameNav')
         if userNameElem.text == '':
-            login()
+            login(driver)
             driver.get(url)
         buyBtn = driver.find_element(By.ID, 'ljgm')
         if buyBtn.text == '立即购买':
@@ -37,7 +34,7 @@ def checkAndOrder(url):
         return False
 
 
-def login():
+def login(driver):
     log('登录中')
     driver.get("https://reg.lenovo.com.cn/user_auth/toc/#/login")
     tab = driver.find_element(By.XPATH, '//div[@class="tab-pane-item "]/div[1]')
@@ -55,21 +52,38 @@ def login():
 
 
 def log(msg):
-    print(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime()), msg)
+    print(datetime.datetime.now(), threading.current_thread().name, msg)
 
 
-if __name__ == "__main__":
+def newDriver():
+    options = webdriver.EdgeOptions()
+    options.add_argument('-ignore-certificate-errors')
+    options.add_argument('-ignore -ssl-errors')
+    driver = webdriver.Edge(options=options)
+    driver.implicitly_wait(5)
+    return driver
+
+
+def runTask(url: str):
+    driver = newDriver()
     while True:
         t = time.localtime()
         if 9 <= t.tm_hour <= 12:
-            # 500
-            checkAndOrder("https://item.lenovo.com.cn/product/1037657.html")
-            checkAndOrder("https://item.lenovo.com.cn/product/1037657.html")
-            # 100
-            checkAndOrder("https://item.lenovo.com.cn/product/1034686.html")
-            checkAndOrder("https://item.lenovo.com.cn/product/1034686.html")
-            # 1008
-            # checkAndOrder("https://item.lenovo.com.cn/product/1037866.html")
+            checkAndOrder(driver, url)
         else:
             log('不在开抢时间')
-        time.sleep(2)
+        time.sleep(0.5)
+
+
+def main():
+    urlList = ['https://item.lenovo.com.cn/product/1037657.html', 'https://item.lenovo.com.cn/product/1034686.html',
+               'https://item.lenovo.com.cn/product/1037657.html', 'https://item.lenovo.com.cn/product/1034686.html']
+    for url in urlList:
+        threading.Thread(target=runTask, args=(url,)).start()
+    for thread in threading.enumerate():
+        if thread is not threading.current_thread():
+            thread.join()
+
+
+if __name__ == "__main__":
+    main()
