@@ -22,7 +22,7 @@ def checkAndOrder(driver, url):
             accountInput.send_keys(phone)
             submitBtn = driver.find_element(By.XPATH, '//div[@class="submit_order"]')
             submitBtn.click()
-            time.sleep(2)
+            driver.find_element(By.XPATH, '//div[text()="收银台"]')
             log(url + ' 已抢到')
             return True
         else:
@@ -72,13 +72,12 @@ def runTask(url: str):
             checkAndOrder(driver, url)
         else:
             log('不在开抢时间')
-        time.sleep(0.2)
+        time.sleep(0.5)
 
 
 def main():
-    # urlList = ['https://mitem.lenovo.com.cn/product/1037657.html', 'https://mitem.lenovo.com.cn/product/1034686.html',
-    #            'https://mitem.lenovo.com.cn/product/1037657.html', 'https://mitem.lenovo.com.cn/product/1034686.html']
-    urlList = ['https://mitem.lenovo.com.cn/product/1038435.html']
+    urlList = ['https://mitem.lenovo.com.cn/product/1037657.html', 'https://mitem.lenovo.com.cn/product/1034686.html',
+               'https://mitem.lenovo.com.cn/product/1037657.html', 'https://mitem.lenovo.com.cn/product/1034686.html']
     for url in urlList:
         threading.Thread(target=runTask, args=(url,)).start()
     for thread in threading.enumerate():
