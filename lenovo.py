@@ -4,6 +4,9 @@ import time
 import datetime
 import threading
 
+from selenium.webdriver.support.expected_conditions import presence_of_element_located
+from selenium.webdriver.support.wait import WebDriverWait
+
 phone = '13880944717'
 password = 'ysqkdlxylcmqL2'
 
@@ -47,7 +50,10 @@ def login(driver):
     checkBox.click()
     btn = driver.find_element(By.XPATH, '//button[text()="登录"]')
     btn.click()
-    time.sleep(1)
+    WebDriverWait(driver, 30).until_not(
+        presence_of_element_located(
+            (By.XPATH, '//div[@class="shumei_captcha shumei_captcha_popup_wrapper shumei_show"]'))
+    )
     log('登录成功')
 
 
@@ -61,6 +67,13 @@ def newDriver():
     options.add_argument('-ignore -ssl-errors')
     driver = webdriver.Edge(options=options)
     driver.implicitly_wait(5)
+    driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
+        "source": """
+         Object.defineProperty(navigator, 'webdriver', {
+           get: () => undefined
+         })
+       """
+    })
     return driver
 
 
@@ -76,8 +89,8 @@ def runTask(url: str):
 
 
 def main():
-    urlList = ['https://item.lenovo.com.cn/product/1037657.html', 'https://item.lenovo.com.cn/product/1034686.html',
-               'https://item.lenovo.com.cn/product/1037657.html', 'https://item.lenovo.com.cn/product/1034686.html']
+    # urlList = ['https://item.lenovo.com.cn/product/1037657.html', 'https://item.lenovo.com.cn/product/1034686.html']
+    urlList = ['https://item.lenovo.com.cn/product/1034686.html']
     for url in urlList:
         threading.Thread(target=runTask, args=(url,)).start()
     for thread in threading.enumerate():

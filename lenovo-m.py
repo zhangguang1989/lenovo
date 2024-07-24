@@ -15,7 +15,11 @@ ua = 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.1
 def checkAndOrder(driver, url):
     try:
         driver.get(url)
-        buyBtn = driver.find_element(By.ID, 'detail-product-buyGroup-ljgm')
+        if url.find('1034686') >= 0:
+            # 这个价格100的搞特殊
+            buyBtn = driver.find_element(By.ID, 'ljgm')
+        else:
+            buyBtn = driver.find_element(By.ID, 'detail-product-buyGroup-ljgm')
         if buyBtn.text == '立即购买':
             log(url + ' 发现库存')
             buyBtn.click()
@@ -88,8 +92,8 @@ def runTask(url: str):
 
 
 def main():
-    urlList = ['https://mitem.lenovo.com.cn/product/1037657.html', 'https://mitem.lenovo.com.cn/product/1034686.html',
-               'https://mitem.lenovo.com.cn/product/1037657.html', 'https://mitem.lenovo.com.cn/product/1034686.html']
+    # urlList = ['https://mitem.lenovo.com.cn/product/1037657.html', 'https://mitem.lenovo.com.cn/product/1034686.html']
+    urlList = ['https://mitem.lenovo.com.cn/product/1037657.html']
     for url in urlList:
         threading.Thread(target=runTask, args=(url,)).start()
     for thread in threading.enumerate():
