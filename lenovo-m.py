@@ -4,6 +4,9 @@ import time
 import datetime
 import threading
 
+from selenium.webdriver.support.expected_conditions import presence_of_element_located
+from selenium.webdriver.support.wait import WebDriverWait
+
 phone = '13880944717'
 password = 'ysqkdlxylcmqL2'
 ua = 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1 Edg/126.0.0.0'
@@ -46,7 +49,9 @@ def login(driver):
     checkBox.click()
     loginBtn = driver.find_element(By.XPATH, '//div[text()="登录"]')
     loginBtn.click()
-    time.sleep(1)
+    WebDriverWait(driver, 30).until_not(
+        presence_of_element_located((By.XPATH, '//div[@class="shumei_captcha shumei_captcha_popup_wrapper shumei_show"]'))
+    )
     log('登录成功')
 
 
@@ -60,6 +65,13 @@ def newDriver():
     options.add_argument('--user-agent=%s' % ua)
     driver = webdriver.Edge(options=options)
     driver.implicitly_wait(5)
+    driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
+        "source": """
+        Object.defineProperty(navigator, 'webdriver', {
+          get: () => undefined
+        })
+      """
+    })
     return driver
 
 
