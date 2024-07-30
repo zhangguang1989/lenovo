@@ -66,7 +66,7 @@ def newDriver():
     options.add_argument('-ignore-certificate-errors')
     options.add_argument('-ignore -ssl-errors')
     driver = webdriver.Edge(options=options)
-    driver.implicitly_wait(5)
+    driver.implicitly_wait(3)
     driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
         "source": """
          Object.defineProperty(navigator, 'webdriver', {
@@ -85,12 +85,12 @@ def runTask(url: str):
             checkAndOrder(driver, url)
         else:
             log('不在开抢时间')
-        time.sleep(0.5)
+        time.sleep(0.2)
 
 
 def main():
     # urlList = ['https://item.lenovo.com.cn/product/1037657.html', 'https://item.lenovo.com.cn/product/1034686.html']
-    urlList = ['https://item.lenovo.com.cn/product/1034686.html']
+    urlList = ['https://item.lenovo.com.cn/product/1034686.html', 'https://item.lenovo.com.cn/product/1034686.html']
     for url in urlList:
         threading.Thread(target=runTask, args=(url,)).start()
     for thread in threading.enumerate():
