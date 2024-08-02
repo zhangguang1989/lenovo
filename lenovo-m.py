@@ -25,6 +25,10 @@ def checkAndOrder(driver, url):
             buyBtn.click()
             confirmBuyBtn = driver.find_element(By.ID, 'detail-product-goodsContent-buyBtn')
             confirmBuyBtn.click()
+            toast = driver.find_element(By.ID, 'detail-product-others-layer')
+            if toast.text == '暂无库存':
+                log(url + ' 暂无库存')
+                return False
             accountInput = driver.find_element(By.XPATH, '//input[@class="virtual-goods-account-form-input"]')
             accountInput.send_keys(phone)
             submitBtn = driver.find_element(By.XPATH, '//div[@class="submit_order"]')
