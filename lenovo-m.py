@@ -23,12 +23,9 @@ def checkAndOrder(driver, url):
         if buyBtn.text == '立即购买':
             log(url + ' 发现库存')
             buyBtn.click()
+            time.sleep(0.2)
             confirmBuyBtn = driver.find_element(By.ID, 'detail-product-goodsContent-buyBtn')
             confirmBuyBtn.click()
-            toast = driver.find_element(By.ID, 'detail-product-others-layer')
-            if toast.text == '暂无库存':
-                log(url + ' 暂无库存')
-                return False
             accountInput = driver.find_element(By.XPATH, '//input[@class="virtual-goods-account-form-input"]')
             accountInput.send_keys(phone)
             submitBtn = driver.find_element(By.XPATH, '//div[@class="submit_order"]')
@@ -72,7 +69,7 @@ def newDriver():
     options.add_argument('--ignore-certificate-errors')
     options.add_argument('--user-agent=%s' % ua)
     driver = webdriver.Edge(options=options)
-    driver.implicitly_wait(3)
+    driver.implicitly_wait(4)
     driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
         "source": """
         Object.defineProperty(navigator, 'webdriver', {
@@ -92,7 +89,7 @@ def runTask(url: str):
             checkAndOrder(driver, url)
         else:
             log('不在开抢时间')
-        time.sleep(0.2)
+        time.sleep(0.1)
 
 
 def main():

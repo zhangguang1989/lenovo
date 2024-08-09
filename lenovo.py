@@ -66,7 +66,7 @@ def newDriver():
     options.add_argument('-ignore-certificate-errors')
     options.add_argument('-ignore -ssl-errors')
     driver = webdriver.Edge(options=options)
-    driver.implicitly_wait(3)
+    driver.implicitly_wait(4)
     driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
         "source": """
          Object.defineProperty(navigator, 'webdriver', {
@@ -85,7 +85,7 @@ def runTask(url: str):
             checkAndOrder(driver, url)
         else:
             log('不在开抢时间')
-        time.sleep(0.2)
+        time.sleep(0.1)
 
 
 def main():
