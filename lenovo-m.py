@@ -23,7 +23,7 @@ def checkAndOrder(driver, url):
         if buyBtn.text == '立即购买':
             log(url + ' 发现库存')
             buyBtn.click()
-            time.sleep(0.2)
+            time.sleep(0.5)
             confirmBuyBtn = driver.find_element(By.ID, 'detail-product-goodsContent-buyBtn')
             confirmBuyBtn.click()
             accountInput = driver.find_element(By.XPATH, '//input[@class="virtual-goods-account-form-input"]')
@@ -69,7 +69,7 @@ def newDriver():
     options.add_argument('--ignore-certificate-errors')
     options.add_argument('--user-agent=%s' % ua)
     driver = webdriver.Edge(options=options)
-    driver.implicitly_wait(4)
+    driver.implicitly_wait(6)
     driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
         "source": """
         Object.defineProperty(navigator, 'webdriver', {
@@ -89,12 +89,11 @@ def runTask(url: str):
             checkAndOrder(driver, url)
         else:
             log('不在开抢时间')
-        time.sleep(0.1)
+        time.sleep(2)
 
 
 def main():
-    # urlList = ['https://mitem.lenovo.com.cn/product/1037657.html', 'https://mitem.lenovo.com.cn/product/1034686.html']
-    urlList = ['https://mitem.lenovo.com.cn/product/1037657.html', 'https://mitem.lenovo.com.cn/product/1037657.html']
+    urlList = ['https://mitem.lenovo.com.cn/product/1037657.html']
     for url in urlList:
         threading.Thread(target=runTask, args=(url,)).start()
     for thread in threading.enumerate():
