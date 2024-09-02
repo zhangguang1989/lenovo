@@ -15,19 +15,15 @@ ua = 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.1
 def checkAndOrder(driver, url):
     try:
         driver.get(url)
-        if url.find('1034686') >= 0:
-            # 这个价格100的搞特殊
-            buyBtn = driver.find_element(By.ID, 'ljgm')
-        else:
-            buyBtn = driver.find_element(By.ID, 'detail-product-buyGroup-ljgm')
+        buyBtn = driver.find_element(By.ID, 'detail-product-buyGroup-ljgm')
         if buyBtn.text == '立即购买':
             log(url + ' 发现库存')
             buyBtn.click()
-            time.sleep(0.5)
+            time.sleep(0.1)
             confirmBuyBtn = driver.find_element(By.ID, 'detail-product-goodsContent-buyBtn')
             confirmBuyBtn.click()
-            accountInput = driver.find_element(By.XPATH, '//input[@class="virtual-goods-account-form-input"]')
-            accountInput.send_keys(phone)
+            # accountInput = driver.find_element(By.XPATH, '//input[@class="virtual-goods-account-form-input"]')
+            # accountInput.send_keys(phone)
             submitBtn = driver.find_element(By.XPATH, '//div[@class="submit_order"]')
             submitBtn.click()
             driver.find_element(By.XPATH, '//div[text()="收银台"]')
@@ -89,11 +85,11 @@ def runTask(url: str):
             checkAndOrder(driver, url)
         else:
             log('不在开抢时间')
-        time.sleep(2)
+        time.sleep(1)
 
 
 def main():
-    urlList = ['https://mitem.lenovo.com.cn/product/1037657.html']
+    urlList = ['https://mitem.lenovo.com.cn/product/1039473.html', 'https://mitem.lenovo.com.cn/product/1039472.html']
     for url in urlList:
         threading.Thread(target=runTask, args=(url,)).start()
     for thread in threading.enumerate():
