@@ -19,13 +19,17 @@ def checkAndOrder(driver, url):
         if buyBtn.text == '立即购买':
             log(url + ' 发现库存')
             buyBtn.click()
+            log(url + ' 已点击购买')
             time.sleep(0.1)
             confirmBuyBtn = driver.find_element(By.ID, 'detail-product-goodsContent-buyBtn')
             confirmBuyBtn.click()
+            log(url + ' 已点击确认购买')
             # accountInput = driver.find_element(By.XPATH, '//input[@class="virtual-goods-account-form-input"]')
             # accountInput.send_keys(phone)
+            time.sleep(0.1)
             submitBtn = driver.find_element(By.XPATH, '//div[@class="submit_order"]')
             submitBtn.click()
+            log(url + ' 已点击提交订单')
             driver.find_element(By.XPATH, '//div[text()="收银台"]')
             log(url + ' 已抢到')
             return True
@@ -76,25 +80,22 @@ def newDriver():
     return driver
 
 
-def runTask(url: str):
+def runTask(urlList: list):
     driver = newDriver()
     login(driver)
     while True:
         t = time.localtime()
         if 9 <= t.tm_hour <= 12:
-            checkAndOrder(driver, url)
+            for url in urlList:
+                checkAndOrder(driver, url)
         else:
             log('不在开抢时间')
-        time.sleep(1)
+        time.sleep(0.8)
 
 
 def main():
     urlList = ['https://mitem.lenovo.com.cn/product/1039473.html', 'https://mitem.lenovo.com.cn/product/1039472.html']
-    for url in urlList:
-        threading.Thread(target=runTask, args=(url,)).start()
-    for thread in threading.enumerate():
-        if thread is not threading.current_thread():
-            thread.join()
+    runTask(urlList=urlList)
 
 
 if __name__ == "__main__":
